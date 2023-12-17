@@ -62,6 +62,7 @@ Start the Game
 ## Game Rules
 - Players:
    - The game is played between two players.
+   - There are 5 batsman per player.
 
 - Toss:
    - A toss is conducted to decide which player will bat first.
