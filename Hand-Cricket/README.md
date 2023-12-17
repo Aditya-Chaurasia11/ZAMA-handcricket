@@ -82,6 +82,7 @@ Start the Game
  
 ## Game Flow
 
+  Check this for video demo [Click here](https://www.youtube.com/watch?v=7o2wKpB63Y0)
 
  First every user will create or join game
 
