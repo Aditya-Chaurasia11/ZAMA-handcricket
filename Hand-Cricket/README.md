@@ -38,13 +38,13 @@ The game incorporates ZAMA's capabilities in the following ways:
 Clone the project
 
 ```bash
-  https://github.com/Maniveer007/Card-Conquest
+  https://github.com/Aditya-Chaurasia11/ZAMA-handcricket.git
 ```
 
 Go to the project directory
 
 ```bash
-  cd Card-Conquest
+  cd Hand-Cricket
 ```
 
 Install dependencies
