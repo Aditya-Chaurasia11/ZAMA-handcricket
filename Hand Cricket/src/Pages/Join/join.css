@@ -1,0 +1,54 @@
+.component1_ava {
+  display: flex;
+  justify-content: center;
+}
+
+.home_nav_div_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.join_container {
+  padding: 20px 100px;
+  background-color: #fad6ba;
+  min-height: 100vh;
+}
+.active {
+  border: 1px solid #264653;
+  background-color: #e76f51;
+}
+
+.join_nav {
+  width: 250px;
+  text-align: center;
+  padding: 5px;
+  font-size: 18px;
+  color: #264653;
+  font-weight: 500;
+  border-radius: 18px;
+  cursor: pointer;
+}
+.inactive {
+  /* background-color: black; */
+  border: 1px solid #264653;
+
+}
+.join_container h1 {
+  text-align: center;
+  color: #264653;
+}
+
+.join_container_body {
+  margin-top: 40px;
+
+}
+
+.join_card_container{
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 30px;
+}

@@ -1,0 +1,397 @@
+[
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "player",
+				"type": "address"
+			}
+		],
+		"name": "playeradded",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "roundend",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bool",
+				"name": "_toss",
+				"type": "bool"
+			}
+		],
+		"name": "createMatch",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getallmatches",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "ebool",
+						"name": "isMatchFinished",
+						"type": "uint256"
+					},
+					{
+						"internalType": "ebool",
+						"name": "isplayer1Turn",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address[2]",
+						"name": "players",
+						"type": "address[2]"
+					},
+					{
+						"internalType": "euint8[2]",
+						"name": "lastball",
+						"type": "uint256[2]"
+					},
+					{
+						"internalType": "bool[2]",
+						"name": "moves",
+						"type": "bool[2]"
+					},
+					{
+						"internalType": "euint8",
+						"name": "currplayer",
+						"type": "uint256"
+					},
+					{
+						"internalType": "euint8[5]",
+						"name": "player1score",
+						"type": "uint256[5]"
+					},
+					{
+						"internalType": "euint8[5]",
+						"name": "player2score",
+						"type": "uint256[5]"
+					},
+					{
+						"internalType": "ebool",
+						"name": "isSecondinnings",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct multiHandCricketGame.Match[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "pk",
+				"type": "bytes32"
+			}
+		],
+		"name": "getlastToss",
+		"outputs": [
+			{
+				"internalType": "bytes",
+				"name": "",
+				"type": "bytes"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint8",
+				"name": "idx",
+				"type": "uint8"
+			}
+		],
+		"name": "getmatches",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "ebool",
+						"name": "isMatchFinished",
+						"type": "uint256"
+					},
+					{
+						"internalType": "ebool",
+						"name": "isplayer1Turn",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address[2]",
+						"name": "players",
+						"type": "address[2]"
+					},
+					{
+						"internalType": "euint8[2]",
+						"name": "lastball",
+						"type": "uint256[2]"
+					},
+					{
+						"internalType": "bool[2]",
+						"name": "moves",
+						"type": "bool[2]"
+					},
+					{
+						"internalType": "euint8",
+						"name": "currplayer",
+						"type": "uint256"
+					},
+					{
+						"internalType": "euint8[5]",
+						"name": "player1score",
+						"type": "uint256[5]"
+					},
+					{
+						"internalType": "euint8[5]",
+						"name": "player2score",
+						"type": "uint256[5]"
+					},
+					{
+						"internalType": "ebool",
+						"name": "isSecondinnings",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct multiHandCricketGame.Match",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "pk",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "uint8",
+				"name": "idx",
+				"type": "uint8"
+			}
+		],
+		"name": "getmatchesreEncrepted",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "bytes",
+						"name": "isMatchFinished",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes",
+						"name": "isplayer1Turn",
+						"type": "bytes"
+					},
+					{
+						"internalType": "address[2]",
+						"name": "players",
+						"type": "address[2]"
+					},
+					{
+						"internalType": "bytes[2]",
+						"name": "lastball",
+						"type": "bytes[2]"
+					},
+					{
+						"internalType": "bool[2]",
+						"name": "moves",
+						"type": "bool[2]"
+					},
+					{
+						"internalType": "bytes",
+						"name": "currplayer",
+						"type": "bytes"
+					},
+					{
+						"internalType": "bytes[5]",
+						"name": "player1score",
+						"type": "bytes[5]"
+					},
+					{
+						"internalType": "bytes[5]",
+						"name": "player2score",
+						"type": "bytes[5]"
+					},
+					{
+						"internalType": "bytes",
+						"name": "isSecondinnings",
+						"type": "bytes"
+					}
+				],
+				"internalType": "struct multiHandCricketGame.MatchReencrepted",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getnoofmatches",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "idx",
+				"type": "uint256"
+			}
+		],
+		"name": "getwinner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "idx",
+				"type": "uint256"
+			}
+		],
+		"name": "joinMatch",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "idx",
+				"type": "uint256"
+			}
+		],
+		"name": "leaveMatch",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "mapaddress",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "matches",
+		"outputs": [
+			{
+				"internalType": "ebool",
+				"name": "isMatchFinished",
+				"type": "uint256"
+			},
+			{
+				"internalType": "ebool",
+				"name": "isplayer1Turn",
+				"type": "uint256"
+			},
+			{
+				"internalType": "euint8",
+				"name": "currplayer",
+				"type": "uint256"
+			},
+			{
+				"internalType": "ebool",
+				"name": "isSecondinnings",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "idx",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes",
+				"name": "EncreptedBall",
+				"type": "bytes"
+			}
+		],
+		"name": "registerMove",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

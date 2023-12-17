@@ -1,0 +1,13 @@
+.final_winner button {
+  padding: 8px 30px;
+  border-radius: 5px;
+  border: 1.5px solid #264653;
+  background-color: #f4a361;
+  font-size: 20px;
+  color: #264653;
+  outline: none;
+  font-family: "Russo One", sans-serif;
+  cursor: pointer;
+  transition: scale 0.3s ease;
+  margin-top: 15px;
+}

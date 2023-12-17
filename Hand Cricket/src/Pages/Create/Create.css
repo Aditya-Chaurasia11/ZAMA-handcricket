@@ -1,0 +1,158 @@
+.headortail_container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fad6ba;
+}
+.headortail_container_card {
+  padding: 50px 80px;
+  border-radius: 16px;
+  background-color: #e76f51;
+  border: 1px solid black;
+  width: 320px;
+  box-shadow: 7px 7px 12px 0px rgba(0, 0, 0, 0.5); /* Right and bottom shadow */
+}
+
+.headortail_container_card h1 {
+  font-family: "Russo One", sans-serif;
+  font-size: 23px;
+  font-weight: 300;
+  color: #264653;
+  text-align: center;
+}
+
+.headortail_container_lower {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.headortail_container_lower button {
+  padding: 8px 30px;
+  border-radius: 5px;
+  border: 1.5px solid #264653;
+  background-color: #f4a361;
+  font-size: 20px;
+  color: #264653;
+  outline: none;
+  font-family: "Russo One", sans-serif;
+}
+
+.lifted-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  border-bottom: 4px solid #264653; /* Bottom border color */
+  box-shadow: 0px 4px 0px 0px #ff8e32; /* Initial shadow */
+  transition: transform 0.1s, box-shadow 0.3s; /* Transitions */
+}
+
+.lifted-button:hover {
+  transform: translateY(-2px); /* Lift the button on hover */
+  box-shadow: 0px 6px 0px 0px #ff8e32; /* Increase shadow on hover */
+}
+
+.lifted-button.clicked {
+  transform: translateY(2px); /* Push the button down when clicked */
+  box-shadow: none; /* Remove the shadow on click */
+}
+
+.coin {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.front,
+.back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  /* background-color: #f0f0f0; */
+  /* border: 1px solid #ccc; */
+  backface-visibility: hidden;
+}
+
+/* .rotate {
+  animation: spin 3s linear infinite; 
+  transform-origin: center; 
+}
+
+@keyframes spin {
+  100% {
+    transform: rotateX(360deg); 
+  }
+} */
+
+.rotate {
+  animation: spin 0.8s linear infinite; /* Rotating the image indefinitely *
+  transform-origin: center; /* Setting the rotation center */
+}
+
+@keyframes spin {
+  100% {
+    transform: rotateX(360deg); /* Rotate one full circle (360 degrees) */
+  }
+}
+
+.coin_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.coin_container div {
+  height: 150px;
+  width: 150px;
+}
+
+.result_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.result_container_lower {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.result_container_lower button {
+  padding: 8px 30px;
+  border-radius: 5px;
+  border: 1.5px solid #264653;
+  background-color: #f4a361;
+  font-size: 20px;
+  color: #264653;
+  outline: none;
+  font-family: "Russo One", sans-serif;
+}
+
+.waiting_container {
+  /* width: 270px; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.waiting_container div {
+  width: 280px;
+  display: flex;
+}

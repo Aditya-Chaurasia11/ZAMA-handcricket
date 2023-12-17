@@ -1,0 +1,48 @@
+.waitingformove_container {
+  /* width: 270px; */
+  display: flex;
+  align-items: center;
+  height: 100vh;
+  justify-content: center;
+  /* background-image: url("../images/ljbjbh.png");
+  background-size: cover; */
+  color: #264653;
+}
+
+.waitingformove_blurred {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100vh;
+  background-image: url("../../images/ljbjbh.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: -1;
+  filter: blur(5px);
+}
+
+.waitingformove_container .waitingformove_container_card {
+  display: flex;
+  border: 1px solid red;
+  padding: 20px;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  padding: 25px 70px;
+  border-radius: 16px;
+  background-color: #e76f51;
+  border: 1px solid black;
+  width: 400px;
+  box-shadow: 7px 7px 12px 0px rgba(0, 0, 0, 0.5);
+}
+
+.waitingformove_container_card h1 {
+  width: 420px;
+  text-align: start;
+}
+
+.waitingformove_container_card_h1 {
+  text-align: center;
+}
