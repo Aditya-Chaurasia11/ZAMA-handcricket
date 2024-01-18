@@ -11,6 +11,8 @@ const Join = () => {
 
   const getAllMatches = async () => {
     const getAllMatches = await contract.getallmatches();
+
+    console.log(getAllMatches);
     
     setAllMatchesList(getAllMatches);
   };

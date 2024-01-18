@@ -38,7 +38,6 @@ contract multiHandCricketGame is EIP712WithModifier  {
     Match[] public matches;
 
     constructor() EIP712WithModifier("Authorization token", "1"){
-        // inital(); // initalize matches array
     } 
     event playeradded(uint index,address player);
     event roundend(uint index);
@@ -272,6 +271,6 @@ contract multiHandCricketGame is EIP712WithModifier  {
         
     }
 
-    
+   
     
 }
