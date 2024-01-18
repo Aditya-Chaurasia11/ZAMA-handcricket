@@ -1,8 +1,76 @@
 [
 	{
+		"inputs": [
+			{
+				"internalType": "bool",
+				"name": "_toss",
+				"type": "bool"
+			}
+		],
+		"name": "createMatch",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "idx",
+				"type": "uint256"
+			}
+		],
+		"name": "joinMatch",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "random",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "InvalidShortString",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "str",
+				"type": "string"
+			}
+		],
+		"name": "StringTooLong",
+		"type": "error"
+	},
+	{
+		"anonymous": false,
+		"inputs": [],
+		"name": "EIP712DomainChanged",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "idx",
+				"type": "uint256"
+			}
+		],
+		"name": "leaveMatch",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"anonymous": false,
@@ -24,6 +92,24 @@
 		"type": "event"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "idx",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes",
+				"name": "EncreptedBall",
+				"type": "bytes"
+			}
+		],
+		"name": "registerMove",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -37,16 +123,46 @@
 		"type": "event"
 	},
 	{
-		"inputs": [
+		"inputs": [],
+		"name": "eip712Domain",
+		"outputs": [
 			{
-				"internalType": "bool",
-				"name": "_toss",
-				"type": "bool"
+				"internalType": "bytes1",
+				"name": "fields",
+				"type": "bytes1"
+			},
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "version",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "chainId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "verifyingContract",
+				"type": "address"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "salt",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "extensions",
+				"type": "uint256[]"
 			}
 		],
-		"name": "createMatch",
-		"outputs": [],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -99,6 +215,11 @@
 						"internalType": "ebool",
 						"name": "isSecondinnings",
 						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "winner",
+						"type": "address"
 					}
 				],
 				"internalType": "struct multiHandCricketGame.Match[]",
@@ -184,6 +305,11 @@
 						"internalType": "ebool",
 						"name": "isSecondinnings",
 						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "winner",
+						"type": "address"
 					}
 				],
 				"internalType": "struct multiHandCricketGame.Match",
@@ -205,9 +331,14 @@
 				"internalType": "uint8",
 				"name": "idx",
 				"type": "uint8"
+			},
+			{
+				"internalType": "bytes",
+				"name": "signature",
+				"type": "bytes"
 			}
 		],
-		"name": "getmatchesreEncrepted",
+		"name": "getmatchesreEncrypted",
 		"outputs": [
 			{
 				"components": [
@@ -255,9 +386,14 @@
 						"internalType": "bytes",
 						"name": "isSecondinnings",
 						"type": "bytes"
+					},
+					{
+						"internalType": "address",
+						"name": "winner",
+						"type": "address"
 					}
 				],
-				"internalType": "struct multiHandCricketGame.MatchReencrepted",
+				"internalType": "struct multiHandCricketGame.MatchReencrypted",
 				"name": "",
 				"type": "tuple"
 			}
@@ -290,37 +426,16 @@
 		"outputs": [
 			{
 				"internalType": "address",
-				"name": "",
+				"name": "winner",
 				"type": "address"
+			},
+			{
+				"internalType": "bool",
+				"name": "isdraw",
+				"type": "bool"
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "idx",
-				"type": "uint256"
-			}
-		],
-		"name": "joinMatch",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "idx",
-				"type": "uint256"
-			}
-		],
-		"name": "leaveMatch",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -371,27 +486,14 @@
 				"internalType": "ebool",
 				"name": "isSecondinnings",
 				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "winner",
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "idx",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bytes",
-				"name": "EncreptedBall",
-				"type": "bytes"
-			}
-		],
-		"name": "registerMove",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]

@@ -90,6 +90,24 @@ const MatchHome = () => {
   let { id } = useParams();
   const [isPlayer, setIsplayer] = useState(false);
 
+  let generatedToken; 
+  let signature;
+  const SignEip712=async()=>{
+     generatedToken = instance.generateToken({
+      name: "Authorization token",
+      verifyingContract: contract.address,
+    });
+    const params = [walletAddress, JSON.stringify(generatedToken.token)];
+    signature =  window.ethereum.request({
+      method: "eth_signTypedData_v4",
+      params,
+      });
+
+  }
+  useEffect(()=>{
+    if(instance) SignEip712()
+  },[instance])
+
   const getMatchDetail = async () => {
     try {
       const noofmatches = await contract.getnoofmatches();
@@ -97,7 +115,9 @@ const MatchHome = () => {
         navigate("/");
       }
       let encreptedDetails;
-      encreptedDetails = await contract?.getmatchesreEncrepted(publicK, id);
+
+     
+      encreptedDetails = await contract?.getmatchesreEncrypted(generatedToken.publicKey, id, signature);
       console.log(encreptedDetails);
 
       const matchDetail = [
@@ -126,6 +146,8 @@ const MatchHome = () => {
         ],
         instance.decrypt(contract.address, encreptedDetails[8]),
       ];
+
+      console.log(matchDetail[5]);
 
       if (matchDetail[0] === 1) {
         const winnerAdd = await contract.getwinner(id);
@@ -258,6 +280,7 @@ const MatchHome = () => {
       }
 
       if (isPlayer1Turn) {
+        console.log(matchDetail[6]);
         const score = matchDetail[6][currPlayerInd];
 
         console.log(score);
@@ -284,7 +307,7 @@ const MatchHome = () => {
   contract?.on("roundend", (...args) => {
     const [index] = args;
 
-    console.log("new added", index.toNumber());
+    console.log("new round", index.toNumber());
     console.log(id);
     if (index.toNumber() == id) contract && getMatchDetail();
   });
@@ -643,7 +666,7 @@ const MatchHome = () => {
           )}
         </>
       ) : (
-        <WinnerCard add={"0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f"} />
+        <WinnerCard add={winnerAddress} />
       )}
     </>
   );

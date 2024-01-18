@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity 0.8.19;
 
 import "fhevm/lib/TFHE.sol";
+import "fhevm/abstracts/EIP712WithModifier.sol";
 
 
-contract multiHandCricketGame {
+contract multiHandCricketGame is EIP712WithModifier  {
 
     struct Match{
         ebool isMatchFinished;
@@ -16,9 +17,10 @@ contract multiHandCricketGame {
         euint8[5] player1score;
         euint8[5] player2score;
         ebool isSecondinnings;
+        address winner;
     }
 
-    struct MatchReencrepted{
+    struct MatchReencrypted{
         bytes isMatchFinished;
         bytes isplayer1Turn;
         address[2] players;
@@ -28,14 +30,15 @@ contract multiHandCricketGame {
         bytes[5] player1score;
         bytes[5] player2score;
         bytes isSecondinnings;
+        address winner;
     }
 
 
     mapping (address=>uint)public mapaddress;
     Match[] public matches;
 
-    constructor(){
-        inital(); // initalize matches array
+    constructor() EIP712WithModifier("Authorization token", "1"){
+        // inital(); // initalize matches array
     } 
     event playeradded(uint index,address player);
     event roundend(uint index);
@@ -49,10 +52,10 @@ contract multiHandCricketGame {
         return matches;
     }
     
-    function getmatchesreEncrepted(bytes32 pk,uint8 idx) public view returns (MatchReencrepted memory){
+    function getmatchesreEncrypted(bytes32 pk,uint8 idx,bytes memory signature) onlySignedPublicKey(pk, signature) public view returns (MatchReencrypted memory){
         
         if(matches[idx].players[0]==msg.sender){
-            return MatchReencrepted(
+            return MatchReencrypted(
             TFHE.reencrypt(matches[idx].isMatchFinished,pk),
             TFHE.reencrypt(matches[idx].isplayer1Turn,pk),
             matches[idx].players,
@@ -61,10 +64,12 @@ contract multiHandCricketGame {
             TFHE.reencrypt(matches[idx].currplayer,pk),
             [TFHE.reencrypt(matches[idx].player1score[0],pk),TFHE.reencrypt(matches[idx].player1score[1],pk),TFHE.reencrypt(matches[idx].player1score[2],pk),TFHE.reencrypt(matches[idx].player1score[3],pk),TFHE.reencrypt(matches[idx].player1score[4],pk)],
             [TFHE.reencrypt(matches[idx].player2score[0],pk),TFHE.reencrypt(matches[idx].player2score[1],pk),TFHE.reencrypt(matches[idx].player2score[2],pk),TFHE.reencrypt(matches[idx].player2score[3],pk),TFHE.reencrypt(matches[idx].player2score[4],pk)],
-            TFHE.reencrypt(matches[idx].isSecondinnings,pk)
+            TFHE.reencrypt(matches[idx].isSecondinnings,pk),
+            matches[idx].winner
+
         );
         }else if(matches[idx].players[1]==msg.sender){
-            return MatchReencrepted(
+            return MatchReencrypted(
             TFHE.reencrypt(matches[idx].isMatchFinished,pk),
             TFHE.reencrypt(matches[idx].isplayer1Turn,pk),
             matches[idx].players,
@@ -73,11 +78,12 @@ contract multiHandCricketGame {
             TFHE.reencrypt(matches[idx].currplayer,pk),
             [TFHE.reencrypt(matches[idx].player1score[0],pk),TFHE.reencrypt(matches[idx].player1score[1],pk),TFHE.reencrypt(matches[idx].player1score[2],pk),TFHE.reencrypt(matches[idx].player1score[3],pk),TFHE.reencrypt(matches[idx].player1score[4],pk)],
             [TFHE.reencrypt(matches[idx].player2score[0],pk),TFHE.reencrypt(matches[idx].player2score[1],pk),TFHE.reencrypt(matches[idx].player2score[2],pk),TFHE.reencrypt(matches[idx].player2score[3],pk),TFHE.reencrypt(matches[idx].player2score[4],pk)],
-            TFHE.reencrypt(matches[idx].isSecondinnings,pk)
+            TFHE.reencrypt(matches[idx].isSecondinnings,pk),
+            matches[idx].winner
         );
         }
         else{
-            return MatchReencrepted(
+            return MatchReencrypted(
             TFHE.reencrypt(TFHE.asEbool(false),pk),
             TFHE.reencrypt(TFHE.asEbool(false),pk),
             matches[idx].players,
@@ -86,7 +92,8 @@ contract multiHandCricketGame {
             TFHE.reencrypt(TFHE.asEuint8(0),pk),
             [TFHE.reencrypt(TFHE.asEuint8(0),pk),TFHE.reencrypt(TFHE.asEuint8(0),pk),TFHE.reencrypt(TFHE.asEuint8(0),pk),TFHE.reencrypt(TFHE.asEuint8(0),pk),TFHE.reencrypt(TFHE.asEuint8(0),pk)],
             [TFHE.reencrypt(TFHE.asEuint8(0),pk),TFHE.reencrypt(TFHE.asEuint8(0),pk),TFHE.reencrypt(TFHE.asEuint8(0),pk),TFHE.reencrypt(TFHE.asEuint8(0),pk),TFHE.reencrypt(TFHE.asEuint8(0),pk)],
-            TFHE.reencrypt(TFHE.asEuint8(0),pk)
+            TFHE.reencrypt(TFHE.asEuint8(0),pk),
+            matches[idx].winner
         );
         }
     }
@@ -106,7 +113,7 @@ contract multiHandCricketGame {
         euint8 rand=TFHE.randEuint8();
         ebool randbool=TFHE.asEbool(TFHE.and(rand,TFHE.asEuint8(1)));
 
-        ebool ispalyer1TurnTFHE =TFHE.and(randbool,TFHE.asEbool(_toss));
+        ebool ispalyer1TurnTFHE = TFHE.not(TFHE.xor(randbool,TFHE.asEbool(_toss)));
 
         euint8[5] memory emptyarray;
 
@@ -127,7 +134,8 @@ contract multiHandCricketGame {
             TFHE.asEuint8(0),
             emptyarray,
             emptyarray,
-            TFHE.asEbool(false)
+            TFHE.asEbool(false),
+            address(0)
         )
         );
 
@@ -147,31 +155,43 @@ contract multiHandCricketGame {
     }
 
     function leaveMatch(uint idx)public {
-        Match memory Usermatch=matches[idx];
+        Match storage Usermatch=matches[idx];
         require(Usermatch.players[0]==msg.sender||Usermatch.players[0]==msg.sender,"you are not in match");
-        // Usermatch.isMatchFinished=TFHE.asEbool(true);
+        Usermatch.isMatchFinished=TFHE.asEbool(true);
+        if(Usermatch.players[0]==msg.sender){
+            Usermatch.winner=Usermatch.players[1];
+        }
+
+        if(Usermatch.players[1]==msg.sender){
+            Usermatch.winner=Usermatch.players[0];
+        }
 
         mapaddress[Usermatch.players[0]]=0;
         mapaddress[Usermatch.players[1]]=0;
 
+        matches[idx]=Usermatch;
     }
 
     function registerMove(uint idx,bytes memory EncreptedBall) public {
-
-        TFHE.optReq(TFHE.le(TFHE.asEuint8(EncreptedBall),6));
+        require(TFHE.decrypt(TFHE.le(TFHE.asEuint8(EncreptedBall),6)));
+        
         
         Match storage Usermatch=matches[idx];
-        require(Usermatch.players[1]!=address(0),"Player has Not Yet");
-        TFHE.optReq(TFHE.not(Usermatch.isMatchFinished));
+        require(Usermatch.players[1]!=address(0),"Player has Not Yet joined");
+        require(TFHE.decrypt(TFHE.not(Usermatch.isMatchFinished)));
+        
+        
         if (Usermatch.players[0]==msg.sender){
 
             require(Usermatch.moves[0]==false,"you have already made a move");
+            require(TFHE.decrypt(TFHE.eq(Usermatch.lastball[0],0)));
             Usermatch.lastball[0]=TFHE.asEuint8(EncreptedBall);
             Usermatch.moves[0]=true;
         }
         else
             if (Usermatch.players[1]==msg.sender){
             require(Usermatch.moves[1]==false,"you have already made a move");
+            require(TFHE.decrypt(TFHE.eq(Usermatch.lastball[1],0)));
             Usermatch.lastball[1]=TFHE.asEuint8(EncreptedBall);
             Usermatch.moves[1]=true;
         }
@@ -183,25 +203,7 @@ contract multiHandCricketGame {
         }
 
     
-    function inital() private{
-        euint8[5] memory emptyarray;
 
-        for(uint8 i=0;i<5;i++){
-            emptyarray[i]=TFHE.asEuint8(0);
-        }
-        matches.push(Match(
-            // "",
-            TFHE.asEbool(false),
-            TFHE.asEbool(false),
-            [address(0),address(0)],
-            [TFHE.asEuint8(0),TFHE.asEuint8(0)],
-            [false,false],
-            TFHE.asEuint8(0),
-            emptyarray,
-            emptyarray,
-            TFHE.asEbool(false)
-        ));
-    }
 
     
 
@@ -210,24 +212,23 @@ contract multiHandCricketGame {
     function _awaitMatch(uint idx) internal{
         Match storage Usermatch=matches[idx];
 
-        ebool isout=TFHE.eq(Usermatch.lastball[0],Usermatch.lastball[1]); // check wehether player is out
-        ebool is_not_out=TFHE.ne(Usermatch.lastball[0],Usermatch.lastball[1]); // stores encrepted bool whether player is notout 
+        ebool isout=TFHE.eq(Usermatch.lastball[0],Usermatch.lastball[1]); // check whether player is out
 
-        ebool is_out_and_nextplayer=TFHE.and(isout,TFHE.le(Usermatch.currplayer,4)); // checks whether out and next player should bat 
+        ebool is_out_and_nextplayer=TFHE.and(isout,TFHE.lt(Usermatch.currplayer,4)); // checks whether out and next player should bat 
+        ebool is_out_and_nextinnigs=TFHE.and(isout,TFHE.eq(Usermatch.currplayer,4)); // checks whether player is out and next innings should begin
 
         Usermatch.currplayer=TFHE.cmux(is_out_and_nextplayer,TFHE.add(Usermatch.currplayer,1),Usermatch.currplayer); // updates currplayer if is_out_and_nextplayer is true
 
-        ebool is_out_and_nextinnigs=TFHE.and(isout,TFHE.eq(Usermatch.currplayer,5)); // checks whether player is out and next innings should begin
 
-        ebool matchcompleted =TFHE.and(is_out_and_nextinnigs,Usermatch.isSecondinnings); // updated matchcompleted ebool
+        Usermatch.isMatchFinished =TFHE.and(is_out_and_nextinnigs,Usermatch.isSecondinnings); // updated matchFinished
         Usermatch.isSecondinnings=TFHE.cmux(is_out_and_nextinnigs,TFHE.asEbool(true),Usermatch.isSecondinnings); // updates issecondinnings if last player is out and 
         
 
         Usermatch.isplayer1Turn=TFHE.cmux(is_out_and_nextinnigs,TFHE.not(Usermatch.isplayer1Turn),Usermatch.isplayer1Turn); // updates is player1 turn if innings changed
         Usermatch.currplayer=TFHE.cmux(is_out_and_nextinnigs,TFHE.asEuint8(0),Usermatch.currplayer); // updates currplayer if innings changed
 
-        ebool isplayer1Hit=TFHE.and(is_not_out,Usermatch.isplayer1Turn); // checks whether player1 hit the ball
-        ebool isplayer2Hit=TFHE.and(is_not_out,TFHE.not(Usermatch.isplayer1Turn)); // checks whether player2 hit ball
+        ebool isplayer1Hit=TFHE.and(TFHE.not(isout),Usermatch.isplayer1Turn); // checks whether player1 hit the ball
+        ebool isplayer2Hit=TFHE.and(TFHE.not(isout),TFHE.not(Usermatch.isplayer1Turn)); // checks whether player2 hit ball
 
         for(uint8 i=0;i<5;i++){
             // updates players score
@@ -237,30 +238,40 @@ contract multiHandCricketGame {
 
         // reset the moves
         Usermatch.moves=[false,false];
+        Usermatch.lastball=[TFHE.asEuint8(0),TFHE.asEuint8(0)];
 
-        //updates match status
-        Usermatch.isMatchFinished=matchcompleted;
+       
         
         matches[idx]=Usermatch;
 
         emit roundend(idx);
     }
 
-    function getwinner(uint idx) public view returns(address){
-
-        TFHE.optReq(matches[idx].isMatchFinished);
-        Match memory Usermatch = matches[idx];  
-        require(Usermatch.players[0]==msg.sender||Usermatch.players[1]==msg.sender,"you are not mmber of match");
+    function getwinner(uint idx) public view returns(address winner ,bool isdraw){
+        require(TFHE.decrypt(matches[idx].isMatchFinished));
+        
+        Match storage Usermatch = matches[idx];  
+        require(Usermatch.players[0]==msg.sender||Usermatch.players[1]==msg.sender,"you are not member of match");
         euint8 player1score=Usermatch.player1score[0]+Usermatch.player1score[1]+Usermatch.player1score[2]+Usermatch.player1score[3]+Usermatch.player1score[4];
         euint8 player2score=Usermatch.player2score[0]+Usermatch.player2score[1]+Usermatch.player2score[2]+Usermatch.player2score[3]+Usermatch.player2score[4];
+        if(Usermatch.winner!=address(0)){
+            winner=Usermatch.winner;
+        }
+        else{
 
         if(TFHE.decrypt(TFHE.gt(player1score,player2score))){
-            return Usermatch.players[0];
+            winner= Usermatch.players[0];
         }
         else if (TFHE.decrypt(TFHE.lt(player1score,player2score))){
-            return Usermatch.players[1];
+            winner= Usermatch.players[1];
         }
-        return address(0);
+        else{
+            isdraw=true;
+        }
+        }
+        
     }
+
+    
     
 }

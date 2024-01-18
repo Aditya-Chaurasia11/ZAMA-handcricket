@@ -16,9 +16,15 @@ const Home = () => {
 
   const { walletAddress, signer, contract, instance } = useGlobalContext();
   const checkmatches = async () => {
-    const matchidx = await contract.mapaddress(walletAddress);
-
-    if (matchidx?.toNumber() !== 0) navigate(`/match/${matchidx?.toNumber()}`);
+    try{
+        console.log( walletAddress);
+      const matchidx = await contract.mapaddress(walletAddress);
+      console.log(Number(matchidx));
+      
+      if (matchidx?.toNumber() !== 0) navigate(`/match/${matchidx?.toNumber()}`);
+    }catch(e){
+      console.log(e);
+    }
   };
   useEffect(() => {
     contract && checkmatches();
