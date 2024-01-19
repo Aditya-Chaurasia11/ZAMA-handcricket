@@ -90,27 +90,8 @@ const MatchHome = () => {
 
   let { id } = useParams();
   const [isPlayer, setIsplayer] = useState(false);
-  const [generatedToken,settoken]=useState()
-  // const [signature,setsign]=useState()
 
-  // const SignEip712=async()=>{
-  //   const Token = await instance.generateToken({
-  //     name: "Authorization token",
-  //     verifyingContract: contract.address,
-  //   });
-  //   settoken(Token);
-  //   const params = [walletAddress, JSON.stringify(generatedToken.token)];
-  //   const sign =  window.ethereum.request({
-  //     method: "eth_signTypedData_v4",
-  //     params,
-  //     });
 
-  //     setsign(sign)
-
-  // }
-  // useEffect(()=>{
-  //   if(instance) SignEip712()
-  // },[instance])
 
   const getMatchDetail = async () => {
     try {
@@ -120,9 +101,8 @@ const MatchHome = () => {
       }
       let encreptedDetails;
 
-     console.log(generatedToken);
+
       encreptedDetails = await contract?.getmatchesreEncrypted(publicK, id, signature);
-      console.log(encreptedDetails);
 
       const matchDetail = [
         instance.decrypt(contract.address, encreptedDetails[0]),
@@ -151,13 +131,10 @@ const MatchHome = () => {
         instance.decrypt(contract.address, encreptedDetails[8]),
       ];
 
-      console.log(matchDetail[5]);
 
       if (matchDetail[0] === 1) {
         const winnerAdd = await contract.getwinner(id);
         setMatchEnd(matchDetail[0]);
-        console.log("asdada", typeof winnerAdd);
-        console.log("asdada", winnerAdd);
         setWinnerAddress(winnerAdd);
       }
 
@@ -231,23 +208,17 @@ const MatchHome = () => {
         setIsplayer(true);
       }
 
-      console.log(matchDetail[2][1]);
       setPlay1(matchDetail[2][0]);
       setPlay2(matchDetail[2][1]);
 
       const isPlayer1Turn = matchDetail[1];
 
-      console.log(
-        walletAddress.toLowerCase() === matchDetail[2][0].toLowerCase() &&
-          isPlayer1Turn
-      );
       setIsBat(
         (walletAddress.toLowerCase() === matchDetail[2][0].toLowerCase() &&
           isPlayer1Turn) ||
           (walletAddress.toLowerCase() === matchDetail[2][1].toLowerCase() &&
             !isPlayer1Turn)
       );
-      console.log(isPlayer1Turn);
 
       const currPlayerInd = matchDetail[5];
       setCurrPlayerIndex(currPlayerInd);
@@ -258,7 +229,6 @@ const MatchHome = () => {
         const temp = matchDetail[6][i];
         totalscoreP1 = totalscoreP1 + temp;
       }
-      console.log(totalscoreP1);
       setTotalScorePla1(totalscoreP1);
 
       let totalscoreP2 = 0;
@@ -267,7 +237,6 @@ const MatchHome = () => {
         totalscoreP2 = totalscoreP2 + temp;
       }
 
-      console.log(totalscoreP2);
       setTotalScorePla2(totalscoreP2);
       if (matchDetail[8] && matchDetail[1]) {
         setwicketP1(matchDetail[5]);
@@ -284,13 +253,10 @@ const MatchHome = () => {
       }
 
       if (isPlayer1Turn) {
-        console.log(matchDetail[6]);
         const score = matchDetail[6][currPlayerInd];
 
-        console.log(score);
         setLastPlaSr(score);
 
-        console.log(matchDetail[6]);
       } else {
         const score = matchDetail[7][currPlayerInd];
         setLastPlaSr(score);
@@ -317,7 +283,7 @@ const MatchHome = () => {
 
   useEffect(() => {
     getMatchDetail();
-  }, [walletAddress, contract,signature,generatedToken]);
+  }, [walletAddress, contract,signature]);
 
   const [open, setOpen] = useState(false);
 
