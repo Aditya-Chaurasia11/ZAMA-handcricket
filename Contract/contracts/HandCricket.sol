@@ -211,13 +211,16 @@ contract multiHandCricketGame is EIP712WithModifier  {
     function _awaitMatch(uint idx) internal{
         Match storage Usermatch=matches[idx];
 
-        ebool isout=TFHE.eq(Usermatch.lastball[0],Usermatch.lastball[1]); // check whether player is out
+        ebool TFHEisout=TFHE.eq(Usermatch.lastball[0],Usermatch.lastball[1]); // check whether player is out
 
-        ebool is_out_and_nextplayer=TFHE.and(isout,TFHE.lt(Usermatch.currplayer,4)); // checks whether out and next player should bat 
-        ebool is_out_and_nextinnigs=TFHE.and(isout,TFHE.eq(Usermatch.currplayer,4)); // checks whether player is out and next innings should begin
+        bool isout=TFHE.decrypt(TFHEisout);
+        if(isout){
+
+        ebool is_out_and_nextplayer=TFHE.le(Usermatch.currplayer,4); // checks whether out and next player should bat 
 
         Usermatch.currplayer=TFHE.cmux(is_out_and_nextplayer,TFHE.add(Usermatch.currplayer,1),Usermatch.currplayer); // updates currplayer if is_out_and_nextplayer is true
 
+        ebool is_out_and_nextinnigs=TFHE.eq(Usermatch.currplayer,5); // checks whether player is out and next innings should begin
 
         Usermatch.isMatchFinished =TFHE.and(is_out_and_nextinnigs,Usermatch.isSecondinnings); // updated matchFinished
         Usermatch.isSecondinnings=TFHE.cmux(is_out_and_nextinnigs,TFHE.asEbool(true),Usermatch.isSecondinnings); // updates issecondinnings if last player is out and 
@@ -225,14 +228,17 @@ contract multiHandCricketGame is EIP712WithModifier  {
 
         Usermatch.isplayer1Turn=TFHE.cmux(is_out_and_nextinnigs,TFHE.not(Usermatch.isplayer1Turn),Usermatch.isplayer1Turn); // updates is player1 turn if innings changed
         Usermatch.currplayer=TFHE.cmux(is_out_and_nextinnigs,TFHE.asEuint8(0),Usermatch.currplayer); // updates currplayer if innings changed
+        }else{
 
-        ebool isplayer1Hit=TFHE.and(TFHE.not(isout),Usermatch.isplayer1Turn); // checks whether player1 hit the ball
-        ebool isplayer2Hit=TFHE.and(TFHE.not(isout),TFHE.not(Usermatch.isplayer1Turn)); // checks whether player2 hit ball
+
+        ebool isplayer1Hit=Usermatch.isplayer1Turn; // checks whether player1 hit the ball
+        ebool isplayer2Hit=TFHE.not(Usermatch.isplayer1Turn); // checks whether player2 hit ball
 
         for(uint8 i=0;i<5;i++){
             // updates players score
         Usermatch.player1score[i]=TFHE.cmux(TFHE.and(isplayer1Hit,TFHE.eq(Usermatch.currplayer,i)),Usermatch.player1score[i]+Usermatch.lastball[0],Usermatch.player1score[i]);
         Usermatch.player2score[i]=TFHE.cmux(TFHE.and(isplayer2Hit,TFHE.eq(Usermatch.currplayer,i)),Usermatch.player2score[i]+Usermatch.lastball[1],Usermatch.player2score[i]);
+        }
         }
 
         // reset the moves
@@ -271,6 +277,7 @@ contract multiHandCricketGame is EIP712WithModifier  {
         
     }
 
-   
+    
     
 }
+

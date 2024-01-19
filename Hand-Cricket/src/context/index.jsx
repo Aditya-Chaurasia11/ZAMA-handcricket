@@ -12,6 +12,7 @@ export const GlobalContextProvider = ({ children }) => {
   const [signer, setsigner] = useState();
   const [instance, setinstance] = useState();
   const [publicK, setPublic] = useState([]);
+  const [signature,setsignature]=useState();
 
   const getAddress = async () => {
     const accounts = await window?.ethereum?.request({
@@ -51,8 +52,9 @@ export const GlobalContextProvider = ({ children }) => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const Signer = await provider.getSigner();
     setsigner(Signer);
+    // console.log(Signer);
     const Contract = new ethers.Contract(
-      "0xCbCf5cD836F5ED7d3e2B2A4DD29b2a35D14C2915",
+      "0x95f066a6E5E590f227beCC6403e5195dFEC2A15a",
       abi,
       Signer 
     );
@@ -73,8 +75,21 @@ export const GlobalContextProvider = ({ children }) => {
     setinstance(Instance);
 
     const generatedToken = Instance.generateToken({
+      name: "Authorization token",
       verifyingContract: contract.address,
     });
+    const accounts = await window?.ethereum?.request({
+      method: "eth_requestAccounts",
+    });
+    console.log(accounts[0]);
+    const params = [accounts[0], JSON.stringify(generatedToken.token)];
+    const sign =  await window.ethereum.request({
+      method: "eth_signTypedData_v4",
+      params,
+      });
+
+    setsignature(sign)
+
     setPublic(generatedToken.publicKey);
     
   };
@@ -91,6 +106,7 @@ export const GlobalContextProvider = ({ children }) => {
         contract,
         instance,
         publicK,
+        signature
       }}
     >
       {children}

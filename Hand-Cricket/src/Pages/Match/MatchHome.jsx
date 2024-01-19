@@ -21,6 +21,7 @@ import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -75,38 +76,41 @@ const MatchHome = () => {
     try {
       const encreptedinput = instance.encrypt8(ch);
 
-      const txn = await contract.registerMove(id, encreptedinput);
+      const txn = await contract.registerMove(id, encreptedinput,{gasLimit:10000000});
       await txn.wait();
-      getMatchDetail();
+      await getMatchDetail();
     } catch (error) {
       console.log(error);
     }
   };
 
   const navigate = useNavigate();
-  const { walletAddress, signer, contract, instance, publicK } =
+  const { walletAddress, signature, contract, instance, publicK } =
     useGlobalContext();
 
   let { id } = useParams();
   const [isPlayer, setIsplayer] = useState(false);
+  const [generatedToken,settoken]=useState()
+  // const [signature,setsign]=useState()
 
-  let generatedToken; 
-  let signature;
-  const SignEip712=async()=>{
-     generatedToken = instance.generateToken({
-      name: "Authorization token",
-      verifyingContract: contract.address,
-    });
-    const params = [walletAddress, JSON.stringify(generatedToken.token)];
-    signature =  window.ethereum.request({
-      method: "eth_signTypedData_v4",
-      params,
-      });
+  // const SignEip712=async()=>{
+  //   const Token = await instance.generateToken({
+  //     name: "Authorization token",
+  //     verifyingContract: contract.address,
+  //   });
+  //   settoken(Token);
+  //   const params = [walletAddress, JSON.stringify(generatedToken.token)];
+  //   const sign =  window.ethereum.request({
+  //     method: "eth_signTypedData_v4",
+  //     params,
+  //     });
 
-  }
-  useEffect(()=>{
-    if(instance) SignEip712()
-  },[instance])
+  //     setsign(sign)
+
+  // }
+  // useEffect(()=>{
+  //   if(instance) SignEip712()
+  // },[instance])
 
   const getMatchDetail = async () => {
     try {
@@ -116,8 +120,8 @@ const MatchHome = () => {
       }
       let encreptedDetails;
 
-     
-      encreptedDetails = await contract?.getmatchesreEncrypted(generatedToken.publicKey, id, signature);
+     console.log(generatedToken);
+      encreptedDetails = await contract?.getmatchesreEncrypted(publicK, id, signature);
       console.log(encreptedDetails);
 
       const matchDetail = [
@@ -289,7 +293,6 @@ const MatchHome = () => {
         console.log(matchDetail[6]);
       } else {
         const score = matchDetail[7][currPlayerInd];
-
         setLastPlaSr(score);
       }
     } catch (error) {
@@ -314,13 +317,14 @@ const MatchHome = () => {
 
   useEffect(() => {
     getMatchDetail();
-  }, [walletAddress, contract, publicK]);
+  }, [walletAddress, contract,signature,generatedToken]);
 
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
+
 
   const handleClose = () => {
     setOpen(false);
