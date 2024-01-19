@@ -21,7 +21,6 @@ import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
-
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -29,6 +28,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Matchdraw from "../../components/MatchDraw";
+
 
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
@@ -63,6 +64,7 @@ const MatchHome = () => {
   const [winnerAddress, setWinnerAddress] = useState();
   const [wicketP1, setwicketP1] = useState(0);
   const [wicketP2, setwicketP2] = useState(0);
+  const [draw, setDraw] = useState(false);
 
   const zeroAddress = "0x0000000000000000000000000000000000000000";
 
@@ -76,7 +78,9 @@ const MatchHome = () => {
     try {
       const encreptedinput = instance.encrypt8(ch);
 
-      const txn = await contract.registerMove(id, encreptedinput,{gasLimit:10000000});
+      const txn = await contract.registerMove(id, encreptedinput, {
+        gasLimit: 10000000,
+      });
       await txn.wait();
       await getMatchDetail();
     } catch (error) {
@@ -91,8 +95,6 @@ const MatchHome = () => {
   let { id } = useParams();
   const [isPlayer, setIsplayer] = useState(false);
 
-
-
   const getMatchDetail = async () => {
     try {
       const noofmatches = await contract.getnoofmatches();
@@ -101,8 +103,11 @@ const MatchHome = () => {
       }
       let encreptedDetails;
 
-
-      encreptedDetails = await contract?.getmatchesreEncrypted(publicK, id, signature);
+      encreptedDetails = await contract?.getmatchesreEncrypted(
+        publicK,
+        id,
+        signature
+      );
 
       const matchDetail = [
         instance.decrypt(contract.address, encreptedDetails[0]),
@@ -131,12 +136,13 @@ const MatchHome = () => {
         instance.decrypt(contract.address, encreptedDetails[8]),
       ];
 
-
       if (matchDetail[0] === 1) {
-        const winnerAdd = await contract.getwinner(id);
+        const winnerDetails = await contract.getwinner(id);
         setMatchEnd(matchDetail[0]);
-        setWinnerAddress(winnerAdd);
+        setWinnerAddress(winnerDetails[0]);
       }
+
+      if (winnerDetails[1]) setDraw(true);
 
       const data1 = [
         {
@@ -256,7 +262,6 @@ const MatchHome = () => {
         const score = matchDetail[6][currPlayerInd];
 
         setLastPlaSr(score);
-
       } else {
         const score = matchDetail[7][currPlayerInd];
         setLastPlaSr(score);
@@ -272,11 +277,11 @@ const MatchHome = () => {
     console.log("new added");
     if (ind == id) getMatchDetail();
   });
-  contract?.on("playerleft",(...args)=>{
-    const [idx] =args;
+  contract?.on("playerleft", (...args) => {
+    const [idx] = args;
 
-    if(idx==id) getMatchDetail();
-  })
+    if (idx == id) getMatchDetail();
+  });
 
   contract?.on("roundend", (...args) => {
     const [index] = args;
@@ -288,14 +293,13 @@ const MatchHome = () => {
 
   useEffect(() => {
     getMatchDetail();
-  }, [walletAddress, contract,signature]);
+  }, [walletAddress, contract, signature]);
 
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
-
 
   const handleClose = () => {
     setOpen(false);
@@ -323,6 +327,7 @@ const MatchHome = () => {
 
   return (
     <>
+    {!draw?<>
       {!matchEnd ? (
         <>
           {isPlayer ? (
@@ -643,7 +648,7 @@ const MatchHome = () => {
       ) : (
         <WinnerCard add={winnerAddress} />
       )}
-    </>
+    </>:<Matchdraw/>}</>
   );
 };
 
