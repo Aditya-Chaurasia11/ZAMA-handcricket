@@ -54,7 +54,7 @@ export const GlobalContextProvider = ({ children }) => {
     setsigner(Signer);
     // console.log(Signer);
     const Contract = new ethers.Contract(
-      "0x95f066a6E5E590f227beCC6403e5195dFEC2A15a",
+      "0x50F9779Fd089ebF33729Cc81A1701a9F875e69A5",
       abi,
       Signer 
     );

@@ -55,6 +55,19 @@
 				"type": "uint256"
 			}
 		],
+		"name": "playerleft",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
 		"name": "roundend",
 		"type": "event"
 	},

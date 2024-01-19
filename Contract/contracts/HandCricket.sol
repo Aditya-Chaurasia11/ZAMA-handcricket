@@ -41,6 +41,7 @@ contract multiHandCricketGame is EIP712WithModifier  {
     } 
     event playeradded(uint index,address player);
     event roundend(uint index);
+    event playerleft(uint index);
 
 
     function getmatches(uint8 idx) public view returns(Match memory){
@@ -169,6 +170,7 @@ contract multiHandCricketGame is EIP712WithModifier  {
         mapaddress[Usermatch.players[1]]=0;
 
         matches[idx]=Usermatch;
+        emit playerleft (idx);
     }
 
     function registerMove(uint idx,bytes memory EncreptedBall) public {
@@ -277,7 +279,6 @@ contract multiHandCricketGame is EIP712WithModifier  {
         
     }
 
-    
     
 }
 

@@ -272,6 +272,11 @@ const MatchHome = () => {
     console.log("new added");
     if (ind == id) getMatchDetail();
   });
+  contract?.on("playerleft",(...args)=>{
+    const [idx] =args;
+
+    if(idx==id) getMatchDetail();
+  })
 
   contract?.on("roundend", (...args) => {
     const [index] = args;
