@@ -5,7 +5,7 @@ import "fhevm/lib/TFHE.sol";
 import "fhevm/abstracts/EIP712WithModifier.sol";
 
 
-contract multiHandCricketGame is EIP712WithModifier  {
+contract HANDCRICKET is EIP712WithModifier  {
 
     struct Match{
         ebool isMatchFinished;
@@ -39,9 +39,9 @@ contract multiHandCricketGame is EIP712WithModifier  {
 
     constructor() EIP712WithModifier("Authorization token", "1"){
     } 
-    event playeradded(uint index,address player);
-    event roundend(uint index);
-    event playerleft(uint index);
+    event PLAYER_ADDED(uint index,address player);
+    event ROUND_ENDED(uint index);
+    event PLAYER_LEFT(uint index);
 
 
     function getmatches(uint8 idx) public view returns(Match memory){
@@ -113,7 +113,7 @@ contract multiHandCricketGame is EIP712WithModifier  {
         euint8 rand=TFHE.randEuint8();
         ebool randbool=TFHE.asEbool(TFHE.and(rand,TFHE.asEuint8(1)));
 
-        ebool ispalyer1TurnTFHE = TFHE.not(TFHE.xor(randbool,TFHE.asEbool(_toss)));
+        ebool ispalyer1TurnTFHE = TFHE.eq(TFHE.asEuint8(randbool),TFHE.asEuint8(TFHE.asEbool(_toss)));
 
         euint8[5] memory emptyarray;
 
@@ -151,7 +151,7 @@ contract multiHandCricketGame is EIP712WithModifier  {
         Usermatch.players[1]=msg.sender;
         matches[idx]=Usermatch;
 
-        emit playeradded (idx,msg.sender);
+        emit PLAYER_ADDED (idx,msg.sender);
     }
 
     function leaveMatch(uint idx)public {
@@ -170,11 +170,12 @@ contract multiHandCricketGame is EIP712WithModifier  {
         mapaddress[Usermatch.players[1]]=0;
 
         matches[idx]=Usermatch;
-        emit playerleft (idx);
+        emit PLAYER_LEFT (idx);
     }
 
-    function registerMove(uint idx,bytes memory EncreptedBall) public {
-        require(TFHE.decrypt(TFHE.le(TFHE.asEuint8(EncreptedBall),6)));
+    function registerMove(uint idx,bytes memory EncryptedBall) public {
+        require(TFHE.decrypt(TFHE.le(TFHE.asEuint8(EncryptedBall),6)));
+        require(TFHE.decrypt(TFHE.ne(TFHE.asEuint8(EncryptedBall),0)));
         
         
         Match storage Usermatch=matches[idx];
@@ -186,14 +187,14 @@ contract multiHandCricketGame is EIP712WithModifier  {
 
             require(Usermatch.moves[0]==false,"you have already made a move");
             require(TFHE.decrypt(TFHE.eq(Usermatch.lastball[0],0)));
-            Usermatch.lastball[0]=TFHE.asEuint8(EncreptedBall);
+            Usermatch.lastball[0]=TFHE.asEuint8(EncryptedBall);
             Usermatch.moves[0]=true;
         }
         else
             if (Usermatch.players[1]==msg.sender){
             require(Usermatch.moves[1]==false,"you have already made a move");
             require(TFHE.decrypt(TFHE.eq(Usermatch.lastball[1],0)));
-            Usermatch.lastball[1]=TFHE.asEuint8(EncreptedBall);
+            Usermatch.lastball[1]=TFHE.asEuint8(EncryptedBall);
             Usermatch.moves[1]=true;
         }
         matches[idx]=Usermatch;
@@ -211,47 +212,44 @@ contract multiHandCricketGame is EIP712WithModifier  {
 
 
     function _awaitMatch(uint idx) internal{
-        Match storage Usermatch=matches[idx];
+         Match storage Usermatch=matches[idx];
 
-        ebool TFHEisout=TFHE.eq(Usermatch.lastball[0],Usermatch.lastball[1]); // check whether player is out
+        ebool isout=TFHE.eq(Usermatch.lastball[0],Usermatch.lastball[1]); // check wehether player is out
+        ebool is_not_out=TFHE.not(isout);
 
-        bool isout=TFHE.decrypt(TFHEisout);
-        if(isout){
-
-        ebool is_out_and_nextplayer=TFHE.le(Usermatch.currplayer,4); // checks whether out and next player should bat 
+        ebool is_out_and_nextplayer=TFHE.and(isout,TFHE.le(Usermatch.currplayer,4)); // checks whether out and next player should bat 
 
         Usermatch.currplayer=TFHE.cmux(is_out_and_nextplayer,TFHE.add(Usermatch.currplayer,1),Usermatch.currplayer); // updates currplayer if is_out_and_nextplayer is true
 
-        ebool is_out_and_nextinnigs=TFHE.eq(Usermatch.currplayer,5); // checks whether player is out and next innings should begin
+        ebool is_out_and_nextinnigs=TFHE.and(isout,TFHE.eq(Usermatch.currplayer,5)); // checks whether player is out and next innings should begin
 
-        Usermatch.isMatchFinished =TFHE.and(is_out_and_nextinnigs,Usermatch.isSecondinnings); // updated matchFinished
+        ebool matchcompleted =TFHE.and(is_out_and_nextinnigs,Usermatch.isSecondinnings); // updated matchcompleted ebool
         Usermatch.isSecondinnings=TFHE.cmux(is_out_and_nextinnigs,TFHE.asEbool(true),Usermatch.isSecondinnings); // updates issecondinnings if last player is out and 
         
 
         Usermatch.isplayer1Turn=TFHE.cmux(is_out_and_nextinnigs,TFHE.not(Usermatch.isplayer1Turn),Usermatch.isplayer1Turn); // updates is player1 turn if innings changed
         Usermatch.currplayer=TFHE.cmux(is_out_and_nextinnigs,TFHE.asEuint8(0),Usermatch.currplayer); // updates currplayer if innings changed
-        }else{
 
-
-        ebool isplayer1Hit=Usermatch.isplayer1Turn; // checks whether player1 hit the ball
-        ebool isplayer2Hit=TFHE.not(Usermatch.isplayer1Turn); // checks whether player2 hit ball
+        ebool isplayer1Hit=TFHE.and(is_not_out,Usermatch.isplayer1Turn); // checks whether player1 hit the ball
+        ebool isplayer2Hit=TFHE.and(is_not_out,TFHE.not(Usermatch.isplayer1Turn)); // checks whether player2 hit ball
 
         for(uint8 i=0;i<5;i++){
             // updates players score
-        Usermatch.player1score[i]=TFHE.cmux(TFHE.and(isplayer1Hit,TFHE.eq(Usermatch.currplayer,i)),Usermatch.player1score[i]+Usermatch.lastball[0],Usermatch.player1score[i]);
-        Usermatch.player2score[i]=TFHE.cmux(TFHE.and(isplayer2Hit,TFHE.eq(Usermatch.currplayer,i)),Usermatch.player2score[i]+Usermatch.lastball[1],Usermatch.player2score[i]);
-        }
+        ebool curPlayer = TFHE.eq(Usermatch.currplayer,i);
+
+        Usermatch.player1score[i]=TFHE.cmux(TFHE.and(isplayer1Hit,curPlayer),Usermatch.player1score[i]+Usermatch.lastball[0],Usermatch.player1score[i]);
+        Usermatch.player2score[i]=TFHE.cmux(TFHE.and(isplayer2Hit,curPlayer),Usermatch.player2score[i]+Usermatch.lastball[1],Usermatch.player2score[i]);
         }
 
         // reset the moves
         Usermatch.moves=[false,false];
-        Usermatch.lastball=[TFHE.asEuint8(0),TFHE.asEuint8(0)];
 
-       
+        //updates match status
+        Usermatch.isMatchFinished=matchcompleted;
         
         matches[idx]=Usermatch;
 
-        emit roundend(idx);
+        emit ROUND_ENDED(idx);
     }
 
     function getwinner(uint idx) public view returns(address winner ,bool isdraw){
@@ -279,6 +277,7 @@ contract multiHandCricketGame is EIP712WithModifier  {
         
     }
 
+   
     
 }
 

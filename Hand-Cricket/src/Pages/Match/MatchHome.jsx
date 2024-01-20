@@ -271,19 +271,19 @@ const MatchHome = () => {
     }
   };
 
-  contract?.on("playeradded", (...args) => {
+  contract?.on("PLAYER_ADDED", (...args) => {
     const [ind, add] = args;
 
     console.log("new added");
     if (ind == id) getMatchDetail();
   });
-  contract?.on("playerleft", (...args) => {
+  contract?.on("PLAYER_LEFT", (...args) => {
     const [idx] = args;
 
     if (idx == id) getMatchDetail();
   });
 
-  contract?.on("roundend", (...args) => {
+  contract?.on("ROUND_ENDED", (...args) => {
     const [index] = args;
 
     console.log("new round", index.toNumber());
@@ -292,7 +292,7 @@ const MatchHome = () => {
   });
 
   useEffect(() => {
-    getMatchDetail();
+    if (contract) getMatchDetail();
   }, [walletAddress, contract, signature]);
 
   const [open, setOpen] = useState(false);

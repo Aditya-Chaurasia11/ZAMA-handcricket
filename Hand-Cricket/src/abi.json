@@ -42,7 +42,7 @@
 				"type": "address"
 			}
 		],
-		"name": "playeradded",
+		"name": "PLAYER_ADDED",
 		"type": "event"
 	},
 	{
@@ -55,7 +55,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "playerleft",
+		"name": "PLAYER_LEFT",
 		"type": "event"
 	},
 	{
@@ -68,7 +68,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "roundend",
+		"name": "ROUND_ENDED",
 		"type": "event"
 	},
 	{
@@ -184,7 +184,7 @@
 						"type": "address"
 					}
 				],
-				"internalType": "struct multiHandCricketGame.Match[]",
+				"internalType": "struct HANDCRICKET.Match[]",
 				"name": "",
 				"type": "tuple[]"
 			}
@@ -274,7 +274,7 @@
 						"type": "address"
 					}
 				],
-				"internalType": "struct multiHandCricketGame.Match",
+				"internalType": "struct HANDCRICKET.Match",
 				"name": "",
 				"type": "tuple"
 			}
@@ -355,7 +355,7 @@
 						"type": "address"
 					}
 				],
-				"internalType": "struct multiHandCricketGame.MatchReencrypted",
+				"internalType": "struct HANDCRICKET.MatchReencrypted",
 				"name": "",
 				"type": "tuple"
 			}
@@ -500,7 +500,7 @@
 			},
 			{
 				"internalType": "bytes",
-				"name": "EncreptedBall",
+				"name": "EncryptedBall",
 				"type": "bytes"
 			}
 		],
