@@ -186,14 +186,12 @@ contract HANDCRICKET is EIP712WithModifier  {
         if (Usermatch.players[0]==msg.sender){
 
             require(Usermatch.moves[0]==false,"you have already made a move");
-            require(TFHE.decrypt(TFHE.eq(Usermatch.lastball[0],0)));
             Usermatch.lastball[0]=TFHE.asEuint8(EncryptedBall);
             Usermatch.moves[0]=true;
         }
         else
             if (Usermatch.players[1]==msg.sender){
             require(Usermatch.moves[1]==false,"you have already made a move");
-            require(TFHE.decrypt(TFHE.eq(Usermatch.lastball[1],0)));
             Usermatch.lastball[1]=TFHE.asEuint8(EncryptedBall);
             Usermatch.moves[1]=true;
         }
