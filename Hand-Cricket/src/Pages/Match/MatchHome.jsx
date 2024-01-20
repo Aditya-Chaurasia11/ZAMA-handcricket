@@ -140,9 +140,10 @@ const MatchHome = () => {
         const winnerDetails = await contract.getwinner(id);
         setMatchEnd(matchDetail[0]);
         setWinnerAddress(winnerDetails[0]);
+        
+        if (winnerDetails[1]) setDraw(true);
       }
 
-      if (winnerDetails[1]) setDraw(true);
 
       const data1 = [
         {
