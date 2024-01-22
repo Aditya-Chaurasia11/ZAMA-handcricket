@@ -54,7 +54,7 @@ export const GlobalContextProvider = ({ children }) => {
     setsigner(Signer);
     // console.log(Signer);
     const Contract = new ethers.Contract(
-      "0x588876d1dF8a9aC5b346B21CB081791DfdcFFBd0",
+      "0xf4C2851599493823CDDB874F4F78A3E5994d1c78",
       abi,
       Signer 
     );
@@ -67,10 +67,24 @@ export const GlobalContextProvider = ({ children }) => {
   const getInstance = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const { chainId } = await provider.getNetwork();
-    const publicKey = await provider.call({
-      to: "0x0000000000000000000000000000000000000044",
+
+    const ret = await provider.call({
+      // fhe lib address, may need to be changed depending on network
+      to: "0x000000000000000000000000000000000000005d",
+      // first four bytes of keccak256('fhePubKey(bytes1)') + 1 byte for library
+      data: "0xd9d47bb001",
     });
+    
+    const abiCoder = new ethers.utils.AbiCoder();
+    const decoded = abiCoder.decode(['bytes'], ret);
+    
+    const publicKey = decoded[0];
+    
+    console.log(publicKey);
+
     await initFhevm();
+    console.log(publicKey);
+    // console.log(chainId);
     const Instance = await createInstance({ chainId, publicKey });
     setinstance(Instance);
 

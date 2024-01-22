@@ -10,6 +10,7 @@ import triangle from "../../images/triangle.png";
 import "./homepage.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../context";
+// import { ethers } from "ethers";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const Home = () => {
   const checkmatches = async () => {
 
         if(walletAddress&&contract){
+        //  console.log(contract.signer);
           const matchidx = await contract.mapaddress(walletAddress);
           console.log(Number(matchidx));
           

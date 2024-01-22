@@ -76,8 +76,8 @@ const MatchHome = () => {
     setChoice(ch);
 
     try {
+      console.log(instance);
       const encreptedinput = instance.encrypt8(ch);
-
       const txn = await contract.registerMove(id, encreptedinput, {
         gasLimit: 10000000,
       });

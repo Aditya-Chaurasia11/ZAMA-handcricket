@@ -6,10 +6,11 @@ import CardAvaMatches from "../../components/CardAvaMatches";
 
 const Join = () => {
   const zeroAddress = "0x0000000000000000000000000000000000000000";
-  const { contract } = useGlobalContext();
+  const { contract,signature } = useGlobalContext();
   const [allMatchesList, setAllMatchesList] = useState([]);
 
   const getAllMatches = async () => {
+    console.log(contract);
     const getAllMatches = await contract.getallmatches();
 
     console.log(getAllMatches);
@@ -19,7 +20,7 @@ const Join = () => {
 
   useEffect(() => {
     contract && getAllMatches();
-  }, [contract]);
+  }, [contract,signature]);
 
   return (
     <div className="join_container">
