@@ -370,7 +370,4 @@ contract HANDCRICKET is EIP712WithModifier {
         }
     }
 
-    function random() public {
-        euint8 random = TFHE.randEuint8();
-    }
 }
